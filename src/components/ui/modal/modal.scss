@@ -1,0 +1,15 @@
+
+.modal-enter,
+.modal-exit-done,
+.modal-appear {
+  opacity: 0;
+}
+.modal-enter-active,
+.modal-appear-active {
+  opacity: 1;
+  transition: all 300ms;
+}
+.modal-exit-active {
+  opacity: 0;
+  transition: all 300ms;
+}

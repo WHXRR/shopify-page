@@ -1,0 +1,19 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@layer components {
+  .my-input {
+    @apply border border-transparent p-3 py-1 rounded-md w-full bg-input-gray text-xs font-medium outline-none transition-all focus:bg-white focus:border-slate-200 placeholder:text-slate-500 dark:bg-gray-700 dark:focus:bg-gray-700 dark:focus:border-gray-700 dark:placeholder:text-slate-700;
+  }
+  .my-responsive {
+    @apply cursor-pointer dark:text-gray-500 p-1.5 rounded-md transition-all;
+  }
+  .component-selected {
+    @apply relative;
+  }
+  .component-selected::after {
+    content: ' ';
+    @apply border-indigo-500 border border-dashed w-full h-full absolute left-0 top-0 pointer-events-none block;
+  }
+}

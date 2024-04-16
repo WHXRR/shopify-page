@@ -1,0 +1,14 @@
+.copy-enter,
+.copy-exit-done,
+.copy-appear {
+  opacity: 0;
+}
+.copy-enter-active,
+.copy-appear-active {
+  opacity: 1;
+  transition: all 300ms;
+}
+.copy-exit-active {
+  opacity: 0;
+  transition: all 300ms;
+}
