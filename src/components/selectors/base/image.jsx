@@ -1,9 +1,11 @@
 import { useNode } from '@craftjs/core'
 import formComponents from '@/components/toolbar'
 import UIComponents from '@/components/ui'
+import { FilterUselessFields } from '@/utils/FilterUselessFields'
+import { ImageDefaultStyle } from '@/assets/js/defaultStyle'
 
 const { Accordion } = UIComponents
-const { ToolbarInput, ToolbarSelect } = formComponents
+const { ToolbarInput, ToolbarSelect, ToolbarResponsive } = formComponents
 
 export function Image({
   className,
@@ -25,19 +27,38 @@ export function Image({
   const {
     connectors: { connect, drag },
   } = useNode()
+
+  const newProps = FilterUselessFields(
+    {
+      marginTop,
+      marginRight,
+      marginBottom,
+      marginLeft,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+      width,
+      height,
+    },
+    ImageDefaultStyle,
+  )
+
   return (
-    <span ref={(ref) => connect(drag(ref))} className='inline-block align-bottom flex-1'>
+    <span
+      ref={(ref) => connect(drag(ref))}
+      className={`img-default ${className}`}
+      style={{
+        ...newProps,
+        ...style,
+      }}
+    >
       <img
-        className={className}
         src={src}
         alt={alt}
+        className='img'
         style={{
-          margin: `${marginTop + 'px'} ${marginRight + 'px'} ${marginBottom + 'px'} ${marginLeft + 'px'}`,
-          padding: `${paddingTop + 'px'} ${paddingRight + 'px'} ${paddingBottom + 'px'} ${paddingLeft + 'px'}`,
-          width: +width ? width + 'px' : width,
-          height: +height ? height + 'px' : height,
           objectFit,
-          ...style,
         }}
       />
     </span>
@@ -64,6 +85,12 @@ export const ImageSettings = () => {
     <div>
       <div className='py-4 px-4 pb-2 border-b border-bg-gray font-medium text-lg dark:border-b-gray-700'>
         {name}
+      </div>
+      <div className='flex items-center justify-between px-4 py-3.5 border-b border-bg-gray dark:border-b-gray-700'>
+        <div className='font-semibold text-sm'>Responsive</div>
+        <div>
+          <ToolbarResponsive />
+        </div>
       </div>
       <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
         <Accordion titleClassName='font-semibold text-sm' title='Dimensions'>
@@ -117,17 +144,7 @@ Image.craft = {
     className: '',
     src: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
     alt: 'img',
-    marginTop: '0',
-    marginRight: '0',
-    marginBottom: '0',
-    marginLeft: '0',
-    paddingTop: '0',
-    paddingRight: '0',
-    paddingBottom: '0',
-    paddingLeft: '0',
-    width: '100%',
-    height: '100%',
-    objectFit: 'contain',
+    ...ImageDefaultStyle,
   },
   related: {
     settings: ImageSettings,

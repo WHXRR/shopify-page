@@ -7,11 +7,13 @@ import LockSVG from '@/assets/images/lock.svg?react'
 import UnLockSVG from '@/assets/images/un-lock.svg?react'
 import SunSvg from '@/assets/images/sun.svg?react'
 import MoonSvg from '@/assets/images/moon.svg?react'
+import SaveSvg from '@/assets/images/save.svg?react'
 import UIComponents from '@/components/ui'
 import lz from 'lzutf8'
 import { useEffect, useRef, useState } from 'react'
 import { useEditor } from '@craftjs/core'
 import { useTheme } from '@/hook/Theme.js'
+import styleCss from '@/assets/js/style'
 
 const { Copy, Modal } = UIComponents
 const Topbar = () => {
@@ -38,7 +40,9 @@ const Topbar = () => {
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
-        <script src="https://cdn.tailwindcss.com"></script>
+        <style>
+        ${styleCss}
+        </style>
       </head>
       <body>
         ${htmlString}
@@ -71,9 +75,15 @@ const Topbar = () => {
     }
   })
 
+  const save = () => {
+    const json = query.serialize()
+    const str = lz.encodeBase64(lz.compress(json))
+    window.localStorage.setItem('json', str)
+  }
+
   const [theme, setTheme] = useTheme()
   return (
-    <div className='mx-8 mt-3 flex items-center bg-white p-1 rounded-md justify-between dark:bg-slate-900 transition-all'>
+    <div className='flex items-center mb-4 bg-white p-1 rounded-md justify-between dark:bg-slate-900 transition-all'>
       {enabled ? (
         <div className='flex'>
           <div
@@ -152,6 +162,15 @@ const Topbar = () => {
             }}
           >
             {enabled ? <LockSVG /> : <UnLockSVG />}
+          </button>
+        </div>
+        <div className='bg-gray-100 flex items-center justify-center p-1 rounded-md dark:bg-gray-700'>
+          <button
+            className='bg-white text-indigo-500 p-1.5 rounded-md dark:bg-slate-500 dark:text-slate-100'
+            onClick={save}
+            title='Save'
+          >
+            <SaveSvg />
           </button>
         </div>
       </div>

@@ -1,11 +1,13 @@
 import { Element, Frame, useEditor } from '@craftjs/core'
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Container } from '../selectors/base/container'
 import PC from '@/assets/images/svg-pc.svg?react'
 import Pad from '@/assets/images/svg-pad.svg?react'
 import Mobile from '@/assets/images/svg-mobile.svg?react'
 import Framer from 'react-frame-component'
 import Topbar from './topbar'
+import lz from 'lzutf8'
+import styleCss from '@/assets/js/style'
 
 export default function EditorContainer() {
   const { connectors } = useEditor((state, query) => ({
@@ -30,7 +32,7 @@ export default function EditorContainer() {
     {
       name: 'mobile',
       icon: <Mobile />,
-      width: '480px',
+      width: '400px',
     },
   ]
 
@@ -39,6 +41,15 @@ export default function EditorContainer() {
     const selector = document.getElementById('selectorContainer')
     selector.style.width = screen.width
   }
+
+  const [json, setJson] = useState(null)
+  useEffect(() => {
+    const str = window.localStorage.getItem('json')
+    if (str) {
+      const json = lz.decompress(lz.decodeBase64(str))
+      setJson(json)
+    }
+  }, [])
 
   const initialContent = `<!DOCTYPE html>
   <html>
@@ -78,6 +89,9 @@ export default function EditorContainer() {
           display: block;
           box-sizing: border-box;
         }
+        .component-selected-bg {
+          background-color: #f3f3fe !important;
+        }
         ::-webkit-scrollbar {
           width: 6px;
           height: 6px;
@@ -100,16 +114,7 @@ export default function EditorContainer() {
         ::-webkit-scrollbar-thumb:horizontal:hover {
           background-color: #e5e7eb;
         }
-        @media (min-width: 768px) {
-          .hidden-pc {
-            display: none !important;
-          }
-        }
-        @media (max-width: 480px) {
-          .hidden-xs {
-            display: none !important;
-          }
-        }
+        ${styleCss}
       </style>     
     </head>
     <body>
@@ -118,12 +123,11 @@ export default function EditorContainer() {
   </html>`
 
   return (
-    <main className='flex flex-col flex-1 page-container bg-layout dark:bg-gray-800 transition-all'>
+    <main className='flex flex-col flex-1 bg-layout dark:bg-gray-800 transition-all px-8 py-3'>
       <Topbar />
       <div
         id='selectorContainer'
-        className='flex-1 px-8 py-4 flex flex-col m-auto w-full transition-all'
-        ref={(ref) => connectors.select(connectors.hover(ref, null), null)}
+        className='flex-1 flex flex-col m-auto w-full transition-all page-container overflow-hidden relative'
       >
         <div className='bg-gray-200 px-3 py-4 rounded-t-xl flex justify-between items-center dark:bg-gray-700 transition-all'>
           <div className='flex'>
@@ -143,18 +147,22 @@ export default function EditorContainer() {
             ))}
           </div>
         </div>
-        <div className='flex-1 rounded-b-xl flex justify-center flex-col overflow-y-auto'>
+        <div
+          className='flex-1 rounded-b-xl flex justify-center flex-col overflow-y-auto'
+          ref={(ref) => connectors.select(connectors.hover(ref, null), null)}
+        >
           <Framer
             className='bg-white craftjs-renderer w-full h-full'
             initialContent={initialContent}
           >
-            <Frame>
+            <Frame data={json}>
               <Element
                 is={Container}
                 canvas
                 className='selector'
                 backgroundColor='#ffffff'
                 flexDirection='column'
+                maxWidth='100%'
                 style={{ minHeight: '100%' }}
                 custom={{ displayName: 'App' }}
               ></Element>

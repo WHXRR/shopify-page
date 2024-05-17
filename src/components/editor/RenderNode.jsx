@@ -22,7 +22,6 @@ export const RenderNode = ({ render }) => {
     deletable,
     connectors: { drag },
     parent,
-    className,
   } = useNode((node) => ({
     isHover: node.events.hovered,
     dom: node.dom,
@@ -40,39 +39,19 @@ export const RenderNode = ({ render }) => {
       if (isActive || isHover) {
         dom.classList.add('component-selected')
       } else dom.classList.remove('component-selected')
-      // if (isActive && id != ROOT_NODE) {
-      //   dom.className = `bg-indigo-50 ${dom.classList.toString()}`
-      // } else dom.classList.remove('bg-indigo-50')
+      if (isActive && id != ROOT_NODE) {
+        dom.classList.add('component-selected-bg')
+      } else dom.classList.remove('component-selected-bg')
     }
-  }, [dom, isActive, isHover])
+  }, [dom, id, isActive, isHover])
 
-  const getSelectorRect = useCallback(() => {
-    const selectorDom = document.querySelector('.craftjs-renderer')
-    const {
-      top: selectorDomTop,
-      left: selectorDomLeft,
-      bottom: selectorDomottom,
-    } = selectorDom ? selectorDom.getBoundingClientRect() : { top: 0, left: 0, bottom: 0 }
+  const getPos = useCallback((dom) => {
+    const { top, left } = dom ? dom.getBoundingClientRect() : { top: 0, left: 0, bottom: 0 }
     return {
-      selectorDomTop,
-      selectorDomLeft,
-      selectorDomottom,
+      top: `${top + 52}px`,
+      left: `${left}px`,
     }
   }, [])
-
-  const getPos = useCallback(
-    (dom) => {
-      const { selectorDomTop, selectorDomLeft, selectorDomottom } = getSelectorRect()
-      const { top, left, bottom } = dom
-        ? dom.getBoundingClientRect()
-        : { top: 0, left: 0, bottom: 0 }
-      return {
-        top: `${top >= 0 ? top + selectorDomTop + 1 : bottom + selectorDomottom - 1}px`,
-        left: `${left + selectorDomLeft}px`,
-      }
-    },
-    [getSelectorRect],
-  )
 
   const getNowPos = useCallback(() => {
     const { current: currentDOM } = currentRef
@@ -83,30 +62,26 @@ export const RenderNode = ({ render }) => {
   }, [dom, getPos])
 
   useEffect(() => {
-    document.querySelector('.craftjs-renderer').addEventListener('scroll', getNowPos)
+    document.querySelector('.craftjs-renderer').contentWindow.addEventListener('scroll', getNowPos)
 
     return () => {
-      document.querySelector('.craftjs-renderer').removeEventListener('scroll', getNowPos)
+      document
+        .querySelector('.craftjs-renderer')
+        .contentWindow.removeEventListener('scroll', getNowPos)
     }
   }, [getNowPos])
 
-  useEffect(() => {
-    setTimeout(() => {
-      getNowPos()
-    }, 0)
-  }, [className, getNowPos])
-
   return (
     <>
-      {isHover || isActive
+      {isActive
         ? createPortal(
             <div
               ref={currentRef}
-              className='h-8 leading-8 -mt-8 text-xs px-2 py-2 text-white bg-indigo-500 fixed flex items-center select-none'
+              className='h-8 leading-8 -mt-8 text-xs px-2 py-2 text-white bg-indigo-500 flex items-center select-none absolute'
               style={{
                 left: getPos(dom).left,
                 top: getPos(dom).top,
-                zIndex: 9999,
+                zIndex: 9,
               }}
             >
               <h2 className='flex-1 mr-4'>{name}</h2>
@@ -140,7 +115,6 @@ export const RenderNode = ({ render }) => {
             document.querySelector('.page-container'),
           )
         : null}
-
       {render}
     </>
   )

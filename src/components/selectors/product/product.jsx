@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import { useNode } from '@craftjs/core'
+import { useNode, Element } from '@craftjs/core'
 import formComponents from '@/components/toolbar'
 import UIComponents from '@/components/ui'
-import { FilterUselessFields } from '@/utils/FilterUselessFields'
-import { ContainerDefaultStyle } from '@/assets/js/defaultStyle'
+import { Container } from '../base/container'
+import { Text } from '../base/text'
+import { Image } from '../base/image'
+import { Button } from '../base/button'
 
 const { Accordion } = UIComponents
 const { ToolbarInput, ToolbarRadio, ToolbarSelect, ToolbarResponsive } = formComponents
-export const Container = ({
-  children,
-  className,
+
+export function Product({
   marginTop,
   marginRight,
   marginBottom,
@@ -24,102 +24,215 @@ export const Container = ({
   flex,
   alignItems,
   justifyContent,
-  width,
-  height,
   borderWidth,
   borderColor,
-  borderTopLeftRadius,
-  borderTopRightRadius,
-  borderBottomRightRadius,
-  borderBottomLeftRadius,
+  borderRadiusLTop,
+  borderRadiusRTop,
+  borderRadiusRBottom,
+  borderRadiusLBottom,
   borderStyle,
   flexWrap,
   display,
-  maxWidth,
-  columns,
-  columnGap,
-  rowGap,
   style,
-}) => {
+}) {
   const {
     connectors: { connect, drag },
   } = useNode()
-
-  const newProps = FilterUselessFields(
-    {
-      display,
-      backgroundColor,
-      color,
-      flexDirection,
-      flex,
-      alignItems,
-      justifyContent,
-      borderColor,
-      borderStyle,
-      flexWrap,
-      marginTop,
-      marginRight,
-      marginBottom,
-      marginLeft,
-      paddingTop,
-      paddingRight,
-      paddingBottom,
-      paddingLeft,
-      width,
-      height,
-      borderTopLeftRadius,
-      borderTopRightRadius,
-      borderBottomRightRadius,
-      borderBottomLeftRadius,
-      borderWidth,
-      maxWidth,
-      columnGap,
-      rowGap,
-    },
-    ContainerDefaultStyle,
-  )
   return (
     <div
       ref={(ref) => connect(drag(ref))}
-      className={`container-default ${className} columns-${columns}`}
       style={{
-        ...newProps,
+        display,
+        margin: `${marginTop + 'px'} ${marginRight + 'px'} ${marginBottom + 'px'} ${marginLeft + 'px'}`,
+        padding: `${paddingTop + 'px'} ${paddingRight + 'px'} ${paddingBottom + 'px'} ${paddingLeft + 'px'}`,
+        backgroundColor,
+        color,
+        flexDirection,
+        flex,
+        alignItems,
+        justifyContent,
+        borderWidth: `${borderWidth}px`,
+        borderColor,
+        borderRadius: `${borderRadiusLTop + 'px'} ${borderRadiusRTop + 'px'} ${borderRadiusRBottom + 'px'} ${borderRadiusLBottom + 'px'}`,
+        borderStyle,
+        boxSizing: 'border-box',
+        flexShrink: 0,
+        flexWrap,
         ...style,
       }}
     >
-      {children ? (
-        children
-      ) : (
-        <div
-          style={{
-            width: '100%',
-            height: '300px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#bfbebe',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-          }}
-          ref={(node) => {
-            if (node) {
-              node.style.setProperty('max-width', '100%', 'important')
-            }
-          }}
-        >
-          Drag here
+      <Element
+        is={Container}
+        id='text1'
+        canvas
+        custom={{ displayName: 'Text1' }}
+        height='auto'
+        justifyContent='center'
+        backgroundColor='#000000'
+        borderTopLeftRadius={15}
+        borderTopRightRadius={15}
+      >
+        <Text text='Discovery package' color='#ffffff' fontSize={20} fontWeight='bold' />
+      </Element>
+      <Element
+        is={Container}
+        id='text2'
+        canvas
+        custom={{ displayName: 'Text2' }}
+        height='auto'
+        justifyContent='center'
+        backgroundColor='#f5f6f6'
+      >
+        <Text text='1 PC * Weed puller' color='#787878' />
+      </Element>
+      <Element
+        is={Container}
+        id='text3'
+        canvas
+        custom={{ displayName: 'Text3' }}
+        height='auto'
+        justifyContent='center'
+        backgroundColor='#f5f6f6'
+      >
+        <Text text='52% OFF' color='#787878' fontWeight='bold' fontSize={30} />
+      </Element>
+      <Element
+        is={Container}
+        id='productImg'
+        canvas
+        custom={{ displayName: 'ProductImg' }}
+        height='auto'
+        justifyContent='center'
+        backgroundColor='#f5f6f6'
+      >
+        <Image src='https://cdn.shopify.com/s/files/1/0556/2348/3564/files/sku_1_4c934d5b-2793-4960-8774-d9a64523d0d4.jpg?v=1713258741' />
+      </Element>
+      <Element
+        is={Container}
+        id='productComment'
+        canvas
+        custom={{ displayName: 'ProductComment' }}
+        height='auto'
+        justifyContent='center'
+        alignItems='center'
+        backgroundColor='transparent'
+        paddingTop={5}
+        paddingBottom={5}
+      >
+        <Image
+          src='https://cdn.shopifycdn.net/s/files/1/0225/4818/5162/files/five_stars.png?v=1619589505'
+          width={100}
+        />
+        <Text
+          text='45.9K Reviews'
+          color='#6c757d'
+          paddingBottom={0}
+          paddingTop={0}
+          paddingRight={0}
+          paddingLeft={10}
+        />
+      </Element>
+      <Element
+        is={Container}
+        id='productPrice'
+        canvas
+        custom={{ displayName: 'ProductPrice' }}
+        height='auto'
+        justifyContent='center'
+        alignItems='center'
+        backgroundColor='transparent'
+        paddingTop={0}
+        paddingBottom={5}
+      >
+        <Text
+          text='£24.99'
+          color='#888888'
+          paddingBottom={0}
+          paddingTop={0}
+          paddingRight={0}
+          paddingLeft={10}
+          fontWeight='bold'
+          fontSize={18}
+          textDecoration='line-through'
+        />
+        <Text
+          text='£11.99'
+          color='#33602c'
+          paddingBottom={0}
+          paddingTop={0}
+          paddingRight={0}
+          paddingLeft={5}
+          fontWeight='bold'
+          fontSize={24}
+        />
+      </Element>
+      <Element
+        is={Container}
+        id='productQTY'
+        canvas
+        custom={{ displayName: 'ProductQTY' }}
+        height='auto'
+        justifyContent='center'
+        alignItems='center'
+        backgroundColor='transparent'
+      >
+        <div className='product-qty'>
+          <a className='product-minus'></a>
+          <input
+            id='quantity'
+            className='product-ipt'
+            min='1'
+            name='quantity'
+            type='text'
+            defaultValue='1'
+          />
+          <a className='product-plus'></a>
         </div>
-      )}
+      </Element>
+      <Element
+        is={Container}
+        id='productBuy'
+        canvas
+        custom={{ displayName: 'ProductBuy' }}
+        height='auto'
+        justifyContent='center'
+        alignItems='center'
+        backgroundColor='transparent'
+        marginTop={10}
+      >
+        <Button
+          className='beat buy-btn'
+          backgroundColor='#000000'
+          color='#ffffff'
+          paddingLeft={50}
+          paddingRight={50}
+          paddingTop={8}
+          paddingBottom={8}
+          borderRadiusLBottom={50}
+          borderRadiusLTop={50}
+          borderRadiusRBottom={50}
+          borderRadiusRTop={50}
+        >
+          <Text text='Order Now' fontWeight='bold' />
+        </Button>
+      </Element>
+      <Element
+        is={Container}
+        id='productTips'
+        canvas
+        custom={{ displayName: 'ProductTips' }}
+        height='auto'
+        justifyContent='center'
+        alignItems='center'
+        backgroundColor='transparent'
+      >
+        <Text text='Secured and Encrypted' fontSize={12} color='#696969' />
+      </Element>
     </div>
   )
 }
 
-Container.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node,
-}
-
-export const ContainerSettings = () => {
+export const ProductSettings = () => {
   const { name } = useNode((node) => {
     return {
       props: node.data.props,
@@ -128,12 +241,6 @@ export const ContainerSettings = () => {
   })
   const margin = ['marginTop', 'marginRight', 'marginBottom', 'marginLeft']
   const padding = ['paddingTop', 'paddingRight', 'paddingBottom', 'paddingLeft']
-  const borderRadius = [
-    'borderTopLeftRadius',
-    'borderTopRightRadius',
-    'borderBottomRightRadius',
-    'borderBottomLeftRadius',
-  ]
   const borderStyle = [
     {
       label: 'solid',
@@ -174,27 +281,11 @@ export const ContainerSettings = () => {
       value: 'inline-block',
     },
   ]
-  const Columns = [
-    {
-      label: '1',
-      value: '1',
-    },
-    {
-      label: '2',
-      value: '2',
-    },
-    {
-      label: '3',
-      value: '3',
-    },
-    {
-      label: '4',
-      value: '4',
-    },
-    {
-      label: '5',
-      value: '5',
-    },
+  const borderRadius = [
+    'borderRadiusLTop',
+    'borderRadiusRTop',
+    'borderRadiusLBottom',
+    'borderRadiusRBottom',
   ]
 
   return (
@@ -207,35 +298,6 @@ export const ContainerSettings = () => {
         <div>
           <ToolbarResponsive />
         </div>
-      </div>
-      <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
-        <Accordion titleClassName='font-semibold text-sm' title='Dimensions'>
-          <div className='grid grid-cols-2 px-4 pb-2 gap-2'>
-            <ToolbarInput propKey='width' label='Width' labelWidth='40px' labelPosition='left' />
-            <ToolbarInput propKey='height' label='Height' labelWidth='40px' labelPosition='left' />
-          </div>
-          <div className='px-4 pb-2'>
-            <ToolbarInput
-              propKey='maxWidth'
-              label='Max Width'
-              labelWidth='70px'
-              labelPosition='left'
-            />
-          </div>
-        </Accordion>
-      </div>
-      <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
-        <Accordion titleClassName='font-semibold text-sm' title='Columns'>
-          <div className='px-4 pb-2'>
-            <ToolbarSelect
-              propKey='columns'
-              label='Columns'
-              labelWidth='80px'
-              labelPosition='left'
-              options={Columns}
-            />
-          </div>
-        </Accordion>
       </div>
       <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
         <Accordion titleClassName='font-semibold text-sm' title='Display'>
@@ -252,17 +314,6 @@ export const ContainerSettings = () => {
       </div>
       <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
         <Accordion titleClassName='font-semibold text-sm' title='Alignment'>
-          <div className='px-4 pb-2'>
-            <ToolbarInput propKey='rowGap' label='Row Gap' labelWidth='75px' labelPosition='left' />
-          </div>
-          <div className='px-4 pb-2'>
-            <ToolbarInput
-              propKey='columnGap'
-              label='Column Gap'
-              labelWidth='75px'
-              labelPosition='left'
-            />
-          </div>
           <div className='grid grid-cols-2 px-4 pb-2 gap-2'>
             <div>
               <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
@@ -295,15 +346,6 @@ export const ContainerSettings = () => {
             </div>
             <div>
               <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
-                Flex Wrap
-              </div>
-              <div className='flex flex-col gap-2'>
-                <ToolbarRadio value='wrap' label='Wrap' propKey='flexWrap' />
-                <ToolbarRadio value='no-wrap' label='NoWrap' propKey='flexWrap' />
-              </div>
-            </div>
-            <div>
-              <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
                 Justify Content
               </div>
               <div className='flex flex-col gap-2'>
@@ -318,6 +360,15 @@ export const ContainerSettings = () => {
                   propKey='justifyContent'
                 />
                 <ToolbarRadio value='space-evenly' label='Space Evenly' propKey='justifyContent' />
+              </div>
+            </div>
+            <div>
+              <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
+                Flex Wrap
+              </div>
+              <div className='flex flex-col gap-2'>
+                <ToolbarRadio value='wrap' label='Wrap' propKey='flexWrap' />
+                <ToolbarRadio value='no-wrap' label='NoWrap' propKey='flexWrap' />
               </div>
             </div>
           </div>
@@ -380,6 +431,13 @@ export const ContainerSettings = () => {
               textAlign='right'
               showColorText={false}
             />
+            <ToolbarInput
+              propKey='borderRadius'
+              label='Border Radius'
+              labelWidth='80px'
+              labelPosition='left'
+              textAlign='right'
+            />
             <ToolbarSelect
               propKey='borderStyle'
               label='Border Style'
@@ -387,9 +445,17 @@ export const ContainerSettings = () => {
               labelPosition='left'
               options={borderStyle}
             />
-            {borderRadius.map((b) => (
-              <ToolbarInput key={b} propKey={b} label={b} labelWidth='155px' labelPosition='left' />
-            ))}
+            <div className='grid grid-cols-2 pb-2 gap-2'>
+              {borderRadius.map((b) => (
+                <ToolbarInput
+                  key={b}
+                  propKey={b}
+                  label={b.replace('borderRadius', '')}
+                  labelWidth='50px'
+                  labelPosition='left'
+                />
+              ))}
+            </div>
           </div>
         </Accordion>
       </div>
@@ -397,12 +463,34 @@ export const ContainerSettings = () => {
   )
 }
 
-Container.craft = {
-  props: { ...ContainerDefaultStyle, className: '', columns: '1' },
-  rules: {
-    canDrag: () => true,
+Product.craft = {
+  props: {
+    className: '',
+    marginTop: '0',
+    marginRight: '0',
+    marginBottom: '0',
+    marginLeft: '0',
+    paddingTop: '0',
+    paddingRight: '0',
+    paddingBottom: '0',
+    paddingLeft: '0',
+    backgroundColor: 'transparent',
+    color: '#000000',
+    flexDirection: 'column',
+    flex: 'unset',
+    alignItems: 'initial',
+    justifyContent: 'initial',
+    borderWidth: '0',
+    borderColor: '#000000',
+    borderStyle: 'solid',
+    flexWrap: 'no-wrap',
+    display: 'flex',
+    borderRadiusLTop: '0',
+    borderRadiusRTop: '0',
+    borderRadiusRBottom: '0',
+    borderRadiusLBottom: '0',
   },
   related: {
-    settings: ContainerSettings,
+    settings: ProductSettings,
   },
 }

@@ -1,15 +1,15 @@
-import PropTypes from 'prop-types'
-import { useNode } from '@craftjs/core'
+import { useNode, Element } from '@craftjs/core'
 import formComponents from '@/components/toolbar'
 import UIComponents from '@/components/ui'
+import { Text } from './text'
 import { FilterUselessFields } from '@/utils/FilterUselessFields'
-import { ContainerDefaultStyle } from '@/assets/js/defaultStyle'
+import { ButtonDefaultStyle } from '@/assets/js/defaultStyle'
 
 const { Accordion } = UIComponents
 const { ToolbarInput, ToolbarRadio, ToolbarSelect, ToolbarResponsive } = formComponents
-export const Container = ({
-  children,
+export const Button = ({
   className,
+  children,
   marginTop,
   marginRight,
   marginBottom,
@@ -36,9 +36,7 @@ export const Container = ({
   flexWrap,
   display,
   maxWidth,
-  columns,
-  columnGap,
-  rowGap,
+  text,
   style,
 }) => {
   const {
@@ -73,15 +71,14 @@ export const Container = ({
       borderBottomLeftRadius,
       borderWidth,
       maxWidth,
-      columnGap,
-      rowGap,
     },
-    ContainerDefaultStyle,
+    ButtonDefaultStyle,
   )
+
   return (
-    <div
+    <button
       ref={(ref) => connect(drag(ref))}
-      className={`container-default ${className} columns-${columns}`}
+      className={`button-default ${className}`}
       style={{
         ...newProps,
         ...style,
@@ -90,36 +87,15 @@ export const Container = ({
       {children ? (
         children
       ) : (
-        <div
-          style={{
-            width: '100%',
-            height: '300px',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            color: '#bfbebe',
-            fontWeight: 'bold',
-            cursor: 'pointer',
-          }}
-          ref={(node) => {
-            if (node) {
-              node.style.setProperty('max-width', '100%', 'important')
-            }
-          }}
-        >
-          Drag here
-        </div>
+        <Element canvas is='div' id='text'>
+          <Text text={text} />
+        </Element>
       )}
-    </div>
+    </button>
   )
 }
 
-Container.propTypes = {
-  className: PropTypes.string,
-  children: PropTypes.node,
-}
-
-export const ContainerSettings = () => {
+export const ButtonSettings = () => {
   const { name } = useNode((node) => {
     return {
       props: node.data.props,
@@ -174,28 +150,6 @@ export const ContainerSettings = () => {
       value: 'inline-block',
     },
   ]
-  const Columns = [
-    {
-      label: '1',
-      value: '1',
-    },
-    {
-      label: '2',
-      value: '2',
-    },
-    {
-      label: '3',
-      value: '3',
-    },
-    {
-      label: '4',
-      value: '4',
-    },
-    {
-      label: '5',
-      value: '5',
-    },
-  ]
 
   return (
     <div>
@@ -225,19 +179,6 @@ export const ContainerSettings = () => {
         </Accordion>
       </div>
       <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
-        <Accordion titleClassName='font-semibold text-sm' title='Columns'>
-          <div className='px-4 pb-2'>
-            <ToolbarSelect
-              propKey='columns'
-              label='Columns'
-              labelWidth='80px'
-              labelPosition='left'
-              options={Columns}
-            />
-          </div>
-        </Accordion>
-      </div>
-      <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
         <Accordion titleClassName='font-semibold text-sm' title='Display'>
           <div className='px-4 pb-2 flex flex-col gap-2'>
             <ToolbarSelect
@@ -252,17 +193,6 @@ export const ContainerSettings = () => {
       </div>
       <div className='py-1.5 border-b border-bg-gray dark:border-b-gray-700'>
         <Accordion titleClassName='font-semibold text-sm' title='Alignment'>
-          <div className='px-4 pb-2'>
-            <ToolbarInput propKey='rowGap' label='Row Gap' labelWidth='75px' labelPosition='left' />
-          </div>
-          <div className='px-4 pb-2'>
-            <ToolbarInput
-              propKey='columnGap'
-              label='Column Gap'
-              labelWidth='75px'
-              labelPosition='left'
-            />
-          </div>
           <div className='grid grid-cols-2 px-4 pb-2 gap-2'>
             <div>
               <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
@@ -295,15 +225,6 @@ export const ContainerSettings = () => {
             </div>
             <div>
               <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
-                Flex Wrap
-              </div>
-              <div className='flex flex-col gap-2'>
-                <ToolbarRadio value='wrap' label='Wrap' propKey='flexWrap' />
-                <ToolbarRadio value='no-wrap' label='NoWrap' propKey='flexWrap' />
-              </div>
-            </div>
-            <div>
-              <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
                 Justify Content
               </div>
               <div className='flex flex-col gap-2'>
@@ -318,6 +239,15 @@ export const ContainerSettings = () => {
                   propKey='justifyContent'
                 />
                 <ToolbarRadio value='space-evenly' label='Space Evenly' propKey='justifyContent' />
+              </div>
+            </div>
+            <div>
+              <div className='text-slate-500 dark:text-slate-100 text-xs font-medium py-1 mb-1'>
+                Flex Wrap
+              </div>
+              <div className='flex flex-col gap-2'>
+                <ToolbarRadio value='wrap' label='Wrap' propKey='flexWrap' />
+                <ToolbarRadio value='no-wrap' label='NoWrap' propKey='flexWrap' />
               </div>
             </div>
           </div>
@@ -397,12 +327,9 @@ export const ContainerSettings = () => {
   )
 }
 
-Container.craft = {
-  props: { ...ContainerDefaultStyle, className: '', columns: '1' },
-  rules: {
-    canDrag: () => true,
-  },
+Button.craft = {
+  props: { ...ButtonDefaultStyle, className: '', text: 'Button' },
   related: {
-    settings: ContainerSettings,
+    settings: ButtonSettings,
   },
 }

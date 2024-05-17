@@ -1,9 +1,13 @@
-import { useNode } from '@craftjs/core'
+import { useNode, useEditor } from '@craftjs/core'
 import { TextSettings } from '../base/text'
-import { Text } from './text'
+import ContentEditable from 'react-contenteditable'
+import { FilterUselessFields } from '@/utils/FilterUselessFields'
+import { TextDefaultStyle } from '@/assets/js/defaultStyle'
 
 export function Link({
   text,
+  style,
+  children,
   className,
   marginTop,
   marginRight,
@@ -17,50 +21,65 @@ export function Link({
   textAlign,
   fontWeight,
   fontSize,
-  style,
-  children,
+  textDecoration,
+  lineHeight,
 }) {
   const {
-    connectors: { connect, drag },
+    connectors: { connect },
+    actions: { setProp },
   } = useNode()
+  const { enabled } = useEditor((state) => ({
+    enabled: state.options.enabled,
+  }))
+
+  const newProps = FilterUselessFields(
+    {
+      color,
+      marginTop,
+      marginRight,
+      marginBottom,
+      marginLeft,
+      paddingTop,
+      paddingRight,
+      paddingBottom,
+      paddingLeft,
+      textAlign,
+      fontWeight,
+      fontSize,
+      textDecoration,
+      lineHeight,
+    },
+    TextDefaultStyle,
+  )
+
   return (
-    <a
+    <ContentEditable
+      innerRef={connect}
+      html={text}
+      disabled={!enabled}
+      href='#'
+      tagName='a'
+      className={`text-default ${className}`}
+      style={{
+        ...newProps,
+        ...style,
+      }}
+      onChange={(e) => {
+        setProp((prop) => (prop.text = e.target.value), 500)
+      }}
       onClick={(e) => {
         e.preventDefault()
       }}
-      href='#'
-      ref={(ref) => connect(drag(ref))}
-      className={className}
-      style={{
-        margin: `${marginTop + 'px'} ${marginRight + 'px'} ${marginBottom + 'px'} ${marginLeft + 'px'}`,
-        padding: `${paddingTop + 'px'} ${paddingRight + 'px'} ${paddingBottom + 'px'} ${paddingLeft + 'px'}`,
-        color,
-        textAlign,
-        fontWeight,
-        fontSize: `${fontSize}px`,
-        ...style,
-      }}
     >
-      <Text text={text} />
       {children}
-    </a>
+    </ContentEditable>
   )
 }
 Link.craft = {
   props: {
+    className: '',
     text: 'link',
-    marginTop: '0',
-    marginRight: '0',
-    marginBottom: '0',
-    marginLeft: '0',
-    paddingTop: '5',
-    paddingRight: '5',
-    paddingBottom: '5',
-    paddingLeft: '5',
-    color: '#000000',
-    textAlign: 'left',
-    fontWeight: '400',
-    fontSize: '16',
+    ...TextDefaultStyle,
   },
   related: {
     settings: TextSettings,
